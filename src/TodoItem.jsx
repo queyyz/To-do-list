@@ -1,38 +1,42 @@
-import React, { useState, useContext } from 'react';
+// src/TodoItem.jsx
+import React, { useContext, useState } from 'react';
 import { TodoContext } from './contexts/TodoContext';
 
+// 🔽 รับ props ทั้งหมดที่จำเป็น
 function TodoItem({ todo }) {
-  const { deleteTodo, toggleTodo, editTodo } = useContext(TodoContext);
+  const { deleteTodo, toggleTodo, editTodo} = useContext(TodoContext);
   const [isEditing, setIsEditing] = useState(false);
   const [newText, setNewText] = useState(todo.text);
 
+  // เราจะเพิ่มฟังก์ชันแก้ไขในขั้นตอนต่อไป
   const handleSave = () => {
-    if (newText.trim()) {
-      editTodo(todo.id, newText);
-      setIsEditing(false);
+    if (newText.trim()){
+        editTodo(todo.id,newText);
+        setIsEditing(false);
     }
   };
 
   return (
     <li className={`todo-item ${todo.completed ? 'completed' : ''}`}>
-      {isEditing ? (
-        <input
+        {isEditing ? (
+            <input
           type="text"
           value={newText}
           onChange={(e) => setNewText(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-          autoFocus
+          onBlur={handleSave} // บันทึกเมื่อ focus หลุด
+          onKeyDown={(e) => e.key === 'Enter' && handleSave()} // บันทึกเมื่อกด Enter
+          autoFocus // focus อัตโนมัติเมื่อแสดงผล
         />
-      ) : (
-        <span onClick={() => toggleTodo(todo.id)}>
-          {todo.text}
-        </span>
-      )}
+        ) : (
+      <span onClick={() => toggleTodo(todo.id)}>
+        {todo.text}
+      </span>
+        )}
       <div>
         {isEditing ? (
-          <button onClick={handleSave}>บันทึก</button>
+            <button onClick={handleSave} className='seve-btn'>บันทึก</button>
         ) : (
-          <button onClick={() => setIsEditing(true)} className="edit-btn">แก้ไข</button>
+            <button onClick={() => setIsEditing(true)} className='edit-btn'>แก้ไข</button>
         )}
         <button onClick={() => deleteTodo(todo.id)}>ลบ</button>
       </div>
